@@ -14,8 +14,19 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from '@/components/ui/select';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+	CompilerSliceStateType,
+	updateCurrentLanguage,
+} from '@/redux/slices/compilerSlice';
+import { RootState } from '@/redux/store';
 
 const CodeEditorHeader = () => {
+	const dispatch = useDispatch();
+	const currentLanguage = useSelector(
+		(state: RootState) => state.compilerSlice.currentLanguage
+	);
+
 	return (
 		<div className='__code_editor_header h-[50px]text-white p-2 flex justify-between items-center'>
 			<div className='__btn_container flex gap-1'>
@@ -45,7 +56,16 @@ const CodeEditorHeader = () => {
 			</div>
 
 			<div className='__tab_switcher'>
-				<Select defaultValue='html'>
+				<Select
+					defaultValue={currentLanguage}
+					onValueChange={(value) =>
+						dispatch(
+							updateCurrentLanguage(
+								value as CompilerSliceStateType['currentLanguage']
+							)
+						)
+					}
+				>
 					<SelectTrigger className='w-[120px] focus:ring-0'>
 						<SelectValue />
 					</SelectTrigger>

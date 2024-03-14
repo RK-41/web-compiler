@@ -1,19 +1,18 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { useCallback, useState } from 'react';
 import CodeMirror from '@uiw/react-codemirror';
-import { javascript } from '@codemirror/lang-javascript';
 import { tags as t } from '@lezer/highlight';
 import { draculaInit } from '@uiw/codemirror-theme-dracula';
-import {
-	loadLanguage,
-	langNames,
-	langs,
-} from '@uiw/codemirror-extensions-langs';
+import { loadLanguage } from '@uiw/codemirror-extensions-langs';
+import { RootState } from '@/redux/store';
+import { useSelector } from 'react-redux';
 
 const CodeEditor = () => {
-	console.log(langNames);
+	const currentLanguage = useSelector(
+		(state: RootState) => state.compilerSlice.currentLanguage
+	);
+	const [value, setValue] = useState("console.log('hello world');");
 
-	const [value, setValue] = useState("console.log('hello world')");
 	const onChange = useCallback((val: string) => {
 		console.log('val: ', val);
 		setValue(val);
@@ -23,7 +22,7 @@ const CodeEditor = () => {
 		<CodeMirror
 			value={value}
 			height='100vh'
-			extensions={[loadLanguage('html')!]}
+			extensions={[loadLanguage(currentLanguage)!]}
 			onChange={onChange}
 			theme={draculaInit({
 				settings: {
