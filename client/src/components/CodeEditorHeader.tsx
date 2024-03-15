@@ -14,6 +14,7 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from '@/components/ui/select';
+
 import { useDispatch, useSelector } from 'react-redux';
 import {
 	CompilerSliceStateType,
@@ -28,12 +29,12 @@ const CodeEditorHeader = () => {
 	);
 
 	return (
-		<div className='__code_editor_header h-[50px]text-white p-2 flex justify-between items-center'>
+		<div className='__code_editor_header h-[50px] text-white p-2 flex justify-between items-center'>
 			<div className='__btn_container flex gap-1'>
 				<TooltipProvider delayDuration={0}>
 					<Tooltip>
 						<TooltipTrigger>
-							<Button variant='success'>
+							<Button variant='success' size='sm'>
 								<Save size={16} />
 							</Button>
 						</TooltipTrigger>
@@ -44,7 +45,7 @@ const CodeEditorHeader = () => {
 
 					<Tooltip>
 						<TooltipTrigger>
-							<Button variant='outline'>
+							<Button variant='outline' size='sm'>
 								<Share2 size={16} />
 							</Button>
 						</TooltipTrigger>
@@ -66,10 +67,10 @@ const CodeEditorHeader = () => {
 						)
 					}
 				>
-					<SelectTrigger className='w-[120px] focus:ring-0'>
+					<SelectTrigger className='w-[120px] h-[40px] focus:ring-0 text-[14px]'>
 						<SelectValue />
 					</SelectTrigger>
-					<SelectContent>
+					<SelectContent className='w-[120px]'>
 						<SelectItem value='html'>HTML</SelectItem>
 						<SelectItem value='css'>CSS</SelectItem>
 						<SelectItem value='javascript'>JavaScript</SelectItem>

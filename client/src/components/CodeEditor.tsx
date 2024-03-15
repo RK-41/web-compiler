@@ -1,27 +1,33 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { useCallback, useState } from 'react';
+import { useCallback } from 'react';
 import CodeMirror from '@uiw/react-codemirror';
 import { tags as t } from '@lezer/highlight';
 import { draculaInit } from '@uiw/codemirror-theme-dracula';
 import { loadLanguage } from '@uiw/codemirror-extensions-langs';
 import { RootState } from '@/redux/store';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { updateCodeCollection } from '@/redux/slices/compilerSlice';
 
 const CodeEditor = () => {
 	const currentLanguage = useSelector(
 		(state: RootState) => state.compilerSlice.currentLanguage
 	);
-	const [value, setValue] = useState("console.log('hello world');");
+	const codeCollection = useSelector(
+		(state: RootState) => state.compilerSlice.codeCollection
+	);
 
-	const onChange = useCallback((val: string) => {
-		console.log('val: ', val);
-		setValue(val);
+	const dispatch = useDispatch();
+
+	const onChange = useCallback((value: string) => {
+		// console.log('val: ', value);
+
+		dispatch(updateCodeCollection(value));
 	}, []);
 
 	return (
 		<CodeMirror
-			value={value}
-			height='100vh'
+			value={codeCollection[currentLanguage]}
+			height='calc(100vh - 60px - 50px)'
 			extensions={[loadLanguage(currentLanguage)!]}
 			onChange={onChange}
 			theme={draculaInit({
