@@ -1,5 +1,6 @@
 import CodeEditor from '@/components/CodeEditor';
 import CodeEditorHeader from '@/components/CodeEditorHeader';
+import CodeRender from '@/components/CodeRender';
 import {
 	ResizableHandle,
 	ResizablePanel,
@@ -23,7 +24,7 @@ const Compiler = () => {
 				className='h-[calc(100dvh-60px)] min-w-[350px]'
 				defaultSize={50}
 			>
-				Right side
+				<CodeRender />
 			</ResizablePanel>
 		</ResizablePanelGroup>
 	);
