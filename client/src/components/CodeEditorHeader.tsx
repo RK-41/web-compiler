@@ -21,8 +21,26 @@ import {
 	updateCurrentLanguage,
 } from '@/redux/slices/compilerSlice';
 import { RootState } from '@/redux/store';
+import { handleError } from '@/utils/handleError';
+import axios from 'axios';
 
 const CodeEditorHeader = () => {
+	const codeCollection = useSelector(
+		(state: RootState) => state.compilerSlice.codeCollection
+	);
+
+	const handleSaveCode = async () => {
+		try {
+			const response = await axios.post('http://localhost:4000/compiler/save', {
+				codeCollection: codeCollection,
+			});
+
+			console.log(response.data);
+		} catch (error) {
+			console.log('Error', error);
+			handleError(error);
+		}
+	};
 	const dispatch = useDispatch();
 	const currentLanguage = useSelector(
 		(state: RootState) => state.compilerSlice.currentLanguage
@@ -34,7 +52,7 @@ const CodeEditorHeader = () => {
 				<TooltipProvider delayDuration={0}>
 					<Tooltip>
 						<TooltipTrigger>
-							<Button variant='success' size='sm'>
+							<Button variant='success' size='sm' onClick={handleSaveCode}>
 								<Save size={16} />
 							</Button>
 						</TooltipTrigger>
