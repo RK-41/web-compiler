@@ -8,8 +8,25 @@ export const saveCode = async (req: Request, res: Response) => {
 			codeCollection: codeCollection,
 		});
 
-		return res.status(201).send(newCode);
+		return res.status(201).send({ url: newCode._id, status: 'Saved' });
 	} catch (error) {
 		return res.status(500).send({ message: 'Error saving code", error' });
+	}
+};
+
+export const loadCode = async (req: Request, res: Response) => {
+	const { urlId } = req.body;
+	try {
+		const existingCode = await Code.findById(urlId);
+
+		if (!existingCode) {
+			return res.status(404).send({ message: 'Code not found' });
+		}
+
+		return res
+			.status(200)
+			.send({ codeCollection: existingCode.codeCollection });
+	} catch (error) {
+		return res.status(500).send({ message: 'Error loading code', error });
 	}
 };

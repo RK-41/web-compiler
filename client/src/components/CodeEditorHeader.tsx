@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { Save, Share2 } from 'lucide-react';
+import { Loader2, Save, Share2 } from 'lucide-react';
 import { Button } from './ui/button';
 import {
 	Tooltip,
@@ -23,22 +23,33 @@ import {
 import { RootState } from '@/redux/store';
 import { handleError } from '@/utils/handleError';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+import { useState } from 'react';
 
 const CodeEditorHeader = () => {
+	const [saveLoading, setSaveLoading] = useState<boolean>(false);
+
+	const navigate = useNavigate();
+
 	const codeCollection = useSelector(
 		(state: RootState) => state.compilerSlice.codeCollection
 	);
 
 	const handleSaveCode = async () => {
+		setSaveLoading(true);
+
 		try {
 			const response = await axios.post('http://localhost:4000/compiler/save', {
 				codeCollection: codeCollection,
 			});
 
 			console.log(response.data);
+			navigate(`/compiler/${response.data.url}`, { replace: true });
 		} catch (error) {
 			console.log('Error', error);
 			handleError(error);
+		} finally {
+			setSaveLoading(false);
 		}
 	};
 	const dispatch = useDispatch();
@@ -53,11 +64,15 @@ const CodeEditorHeader = () => {
 					<Tooltip>
 						<TooltipTrigger>
 							<Button variant='success' size='sm' onClick={handleSaveCode}>
-								<Save size={16} />
+								{saveLoading ? (
+									<Loader2 className='animate-spin' size={16} />
+								) : (
+									<Save size={16} />
+								)}
 							</Button>
 						</TooltipTrigger>
 						<TooltipContent>
-							<p>Save</p>
+							{saveLoading ? <p>Saving...</p> : <p>Save</p>}
 						</TooltipContent>
 					</Tooltip>
 
