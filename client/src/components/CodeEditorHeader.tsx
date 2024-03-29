@@ -1,12 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { Loader2, Save, Share2 } from 'lucide-react';
+import { Code, Copy, Loader2, Save, Share2 } from 'lucide-react';
 import { Button } from './ui/button';
-import {
-	Tooltip,
-	TooltipContent,
-	TooltipProvider,
-	TooltipTrigger,
-} from '@/components/ui/tooltip';
+
 import {
 	Select,
 	SelectContent,
@@ -26,6 +21,17 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 
+import {
+	Dialog,
+	DialogContent,
+	DialogDescription,
+	DialogHeader,
+	DialogTitle,
+	DialogTrigger,
+} from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { toast } from 'sonner';
+
 const CodeEditorHeader = () => {
 	const [saveLoading, setSaveLoading] = useState<boolean>(false);
 
@@ -43,10 +49,12 @@ const CodeEditorHeader = () => {
 				codeCollection: codeCollection,
 			});
 
-			console.log(response.data);
+			// console.log(response.data);
 			navigate(`/compiler/${response.data.url}`, { replace: true });
+			toast('Code successfully saved.');
 		} catch (error) {
-			console.log('Error', error);
+			// console.log('Error', error);
+			toast(`${error.message}: Unable to save code.`);
 			handleError(error);
 		} finally {
 			setSaveLoading(false);
@@ -60,33 +68,49 @@ const CodeEditorHeader = () => {
 	return (
 		<div className='__code_editor_header h-[50px] text-white p-2 flex justify-between items-center'>
 			<div className='__btn_container flex gap-1'>
-				<TooltipProvider delayDuration={0}>
-					<Tooltip>
-						<TooltipTrigger>
-							<Button variant='success' size='sm' onClick={handleSaveCode}>
-								{saveLoading ? (
-									<Loader2 className='animate-spin' size={16} />
-								) : (
-									<Save size={16} />
-								)}
-							</Button>
-						</TooltipTrigger>
-						<TooltipContent>
-							{saveLoading ? <p>Saving...</p> : <p>Save</p>}
-						</TooltipContent>
-					</Tooltip>
+				<Button variant='success' size='sm' onClick={handleSaveCode}>
+					{saveLoading ? (
+						<div className='flex gap-1'>
+							<Loader2 className='animate-spin' size={16} /> Saving
+						</div>
+					) : (
+						<div className='flex gap-1'>
+							<Save size={16} />
+							Save
+						</div>
+					)}
+				</Button>
 
-					<Tooltip>
-						<TooltipTrigger>
-							<Button variant='outline' size='sm'>
-								<Share2 size={16} />
-							</Button>
-						</TooltipTrigger>
-						<TooltipContent>
-							<p>Share</p>
-						</TooltipContent>
-					</Tooltip>
-				</TooltipProvider>
+				<Dialog>
+					<DialogTrigger className='inline-flex items-center justify-center gap-1 whitespace-nowrap font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-background shadow-sm hover:text-accent-foreground h-8 rounded-md px-3 text-xs'>
+						<Share2 size={16} />
+						Share
+					</DialogTrigger>
+					<DialogContent>
+						<DialogHeader>
+							<DialogTitle className='flex gap-1 justify-center items-center'>
+								<Code /> Copy the URL
+							</DialogTitle>
+							<DialogDescription className='__url flex gap-1 items-center w-full'>
+								<Input
+									type='text'
+									disabled
+									className='w-full px-2 py-2 rounded bg-slate-900 text-white select-none'
+									value={window.location.href}
+								/>
+								<Button
+									variant='outline'
+									onClick={() => {
+										window.navigator.clipboard.writeText(window.location.href);
+										toast('URL copied to the clipboard.');
+									}}
+								>
+									<Copy size={14} />
+								</Button>
+							</DialogDescription>
+						</DialogHeader>
+					</DialogContent>
+				</Dialog>
 			</div>
 
 			<div className='__tab_switcher'>
